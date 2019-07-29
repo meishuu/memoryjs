@@ -29,15 +29,6 @@ module.exports = {
   READ: 0x1,
   SUBTRACT: 0x2,
 
-  // function data type constants
-  T_VOID: 0x0,
-  T_STRING: 0x1,
-  T_CHAR: 0x2,
-  T_BOOL: 0x3,
-  T_INT: 0x4,
-  T_DOUBLE: 0x5,
-  T_FLOAT: 0x6,
-
   // Memory access types.
   // See: https://docs.microsoft.com/en-gb/windows/desktop/Memory/memory-protection-constants
   PAGE_NOACCESS: 0x01,
@@ -120,18 +111,6 @@ module.exports = {
     memoryjs.readBuffer(handle, address, size, callback);
   },
 
-  writeMemory(handle, address, value, dataType) {
-    if (dataType === 'str' || dataType === 'string') {
-      value += '\0'; // add terminator
-    }
-
-    return memoryjs.writeMemory(handle, address, value, dataType.toLowerCase());
-  },
-
-  writeBuffer(handle, address, buffer) {
-    return memoryjs.writeBuffer(handle, address, buffer);
-  },
-
   // eslint-disable-next-line
   findPattern(handle, moduleName, signature, signatureType, patternOffset, addressOffset, callback) {
     if (arguments.length === 6) {
@@ -154,46 +133,6 @@ module.exports = {
       addressOffset,
       callback,
     );
-  },
-
-  callFunction(handle, args, returnType, address, callback) {
-    if (arguments.length === 4) {
-      return memoryjs.callFunction(handle, args, returnType, address);
-    }
-
-    memoryjs.callFunction(handle, args, returnType, address, callback);
-  },
-
-  virtualAllocEx(handle, address, size, allocationType, protection, callback) {
-    if (arguments.length === 5) {
-      return memoryjs.virtualAllocEx(handle, address, size, allocationType, protection);
-    }
-
-    memoryjs.virtualAllocEx(handle, address, size, allocationType, protection, callback);
-  },
-
-  virtualProtectEx(handle, address, size, protection, callback) {
-    if (arguments.length === 4) {
-      return memoryjs.virtualProtectEx(handle, address, size, protection);
-    }
-
-    memoryjs.virtualProtectEx(handle, address, size, protection, callback);
-  },
-
-  getRegions(handle, getOffsets, callback) {
-    if (arguments.length === 1) {
-      return memoryjs.getRegions(handle);
-    }
-
-    memoryjs.getRegions(handle, callback);
-  },
-
-  virtualQueryEx(handle, address, callback) {
-    if (arguments.length === 2) {
-      return memoryjs.virtualQueryEx(handle, address);
-    }
-
-    memoryjs.virtualQueryEx(handle, address, callback);
   },
 
   closeProcess: memoryjs.closeProcess,
