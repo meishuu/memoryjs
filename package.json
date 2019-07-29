@@ -1,0 +1,37 @@
+{
+  "name": "memoryjs",
+  "version": "3.3.1",
+  "description": "Node add-on for memory reading and writing!",
+  "main": "index.js",
+  "scripts": {
+    "install": "node-gyp rebuild",
+    "build32": "node-gyp clean configure build --arch=ia32",
+    "build64": "node-gyp clean configure build --arch=x64"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rob--/memoryjs.git"
+  },
+  "keywords": [
+    "memory",
+    "reading",
+    "writing",
+    "management",
+    "addon"
+  ],
+  "author": "Rob--",
+  "license": "MIT",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/Rob--/memoryjs/issues"
+  },
+  "homepage": "https://github.com/Rob--/memoryjs#readme",
+  "dependencies": {
+    "node-addon-api": "^1.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.2"
+  }
+}
