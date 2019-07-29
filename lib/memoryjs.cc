@@ -1,15 +1,15 @@
-#include <napi.h>
 #include <windows.h>
 #include <TlHelp32.h>
+#include <iostream>
+#include <napi.h>
 #include <psapi.h>
 #include <string>
-#include <vector>
-#include <iostream>
 #include <thread>
-#include "module.h"
-#include "process.h"
+#include <vector>
 #include "memory.h"
+#include "module.h"
 #include "pattern.h"
+#include "process.h"
 
 #pragma comment(lib, "psapi.lib")
 
@@ -22,14 +22,14 @@ struct Vector4 {
 };
 
 namespace memoryjs {
-  static void throwError(Napi::Env env, char* error) {
-    Napi::TypeError::New(env, Napi::String::New(env, error)).ThrowAsJavaScriptException();
-  }
+static void throwError(Napi::Env env, char* error) {
+  Napi::TypeError::New(env, Napi::String::New(env, error)).ThrowAsJavaScriptException();
 }
+}  // namespace memoryjs
 
 Napi::Value openProcess(const Napi::CallbackInfo& args) {
   auto env = args.Env();
-  
+
   if (args.Length() != 1 && args.Length() != 2) {
     memoryjs::throwError(env, "requires 1 argument, or 2 arguments if a callback is being used");
     return env.Null();
@@ -96,7 +96,7 @@ Napi::Value openProcess(const Napi::CallbackInfo& args) {
   if (args.Length() == 2) {
     // Callback to let the user handle with the information
     Napi::Function callback = args[1].As<Napi::Function>();
-    callback.Call({ Napi::String::New(env, errorMessage), processInfo });
+    callback.Call({Napi::String::New(env, errorMessage), processInfo});
     return env.Null();
   }
 
@@ -169,10 +169,10 @@ Napi::Value getProcesses(const Napi::CallbackInfo& args) {
   if (args.Length() == 1) {
     // Callback to let the user handle with the information
     Napi::Function callback = args[0].As<Napi::Function>();
-    callback.Call({ Napi::String::New(env, errorMessage), processes });
+    callback.Call({Napi::String::New(env, errorMessage), processes});
     return env.Null();
   }
-  
+
   // return JSON
   return processes;
 }
@@ -232,7 +232,7 @@ Napi::Value getModules(const Napi::CallbackInfo& args) {
   if (args.Length() == 2) {
     // Callback to let the user handle with the information
     Napi::Function callback = args[1].As<Napi::Function>();
-    callback.Call({ Napi::String::New(env, errorMessage), modules });
+    callback.Call({Napi::String::New(env, errorMessage), modules});
     return env.Null();
   }
 
@@ -262,92 +262,104 @@ Napi::Value readMemory(const Napi::CallbackInfo& args) {
 
   // Set callback variables in the case the a callback parameter has been passed
   Napi::Function callback = args[3].As<Napi::Function>();
-  Napi::Value cbError = env.Null(); // Define the error message that will be set if no data type is recognised
+  Napi::Value cbError = env.Null();  // Define the error message that will be set if no data type is recognised
   Napi::Value cbResult;
 
   HANDLE handle = (HANDLE)args[0].As<Napi::Number>().Int32Value();
   DWORD64 address = args[1].As<Napi::Number>().Int64Value();
 
   if (dataType == "byte") {
-
     unsigned char result = memory::readMemory<unsigned char>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "int") {
-
     int result = memory::readMemory<int>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "int32") {
-
     int32_t result = memory::readMemory<int32_t>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "uint32") {
-
     uint32_t result = memory::readMemory<uint32_t>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "int64") {
-
     int64_t result = memory::readMemory<int64_t>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "uint64") {
-
     uint64_t result = memory::readMemory<uint64_t>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "dword") {
-
     DWORD result = memory::readMemory<DWORD>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "short") {
-
     short result = memory::readMemory<short>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "long") {
-
     long result = memory::readMemory<long>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "float") {
-
     float result = memory::readMemory<float>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "double") {
-		
     double result = memory::readMemory<double>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "ptr" || dataType == "pointer") {
-
     intptr_t result = memory::readMemory<intptr_t>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Number::New(env, result);
-    else return Napi::Number::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Number::New(env, result);
+    else
+      return Napi::Number::New(env, result);
 
   } else if (dataType == "bool" || dataType == "boolean") {
-
     bool result = memory::readMemory<bool>(handle, address);
-    if (args.Length() == 4) cbResult = Napi::Boolean::New(env, result);
-    else return Napi::Boolean::New(env, result);
+    if (args.Length() == 4)
+      cbResult = Napi::Boolean::New(env, result);
+    else
+      return Napi::Boolean::New(env, result);
 
   } else if (dataType == "string" || dataType == "str") {
-
     std::vector<char> chars;
     int offset = 0x0;
     while (true) {
@@ -365,40 +377,41 @@ Napi::Value readMemory(const Napi::CallbackInfo& args) {
         break;
       }
 
-	  // go to next char
+      // go to next char
       offset += sizeof(char);
     }
 
     if (chars.size() == 0) {
-
-      if (args.Length() == 4) cbError = Napi::String::New(env, "unable to read string (no null-terminator found after 1 million chars)");
+      if (args.Length() == 4)
+        cbError = Napi::String::New(env, "unable to read string (no null-terminator found after 1 million chars)");
       else {
         memoryjs::throwError(env, "unable to read string (no null-terminator found after 1 million chars)");
         return env.Null();
       }
-    
+
     } else {
       // vector -> string
       std::string str(chars.begin(), chars.end());
 
-      if (args.Length() == 4) cbResult = Napi::String::New(env, str);
-      else return Napi::String::New(env, str);
-    
+      if (args.Length() == 4)
+        cbResult = Napi::String::New(env, str);
+      else
+        return Napi::String::New(env, str);
     }
 
   } else if (dataType == "vector3" || dataType == "vec3") {
-
     Vector3 result = memory::readMemory<Vector3>(handle, address);
     Napi::Object moduleInfo = Napi::Object::New(env);
     moduleInfo.Set("x", Napi::Number::New(env, result.x));
     moduleInfo.Set("y", Napi::Number::New(env, result.y));
     moduleInfo.Set("z", Napi::Number::New(env, result.z));
 
-    if (args.Length() == 4) cbResult = moduleInfo;
-    else return moduleInfo;
+    if (args.Length() == 4)
+      cbResult = moduleInfo;
+    else
+      return moduleInfo;
 
   } else if (dataType == "vector4" || dataType == "vec4") {
-    
     Vector4 result = memory::readMemory<Vector4>(handle, address);
     Napi::Object moduleInfo = Napi::Object::New(env);
     moduleInfo.Set("w", Napi::Number::New(env, result.w));
@@ -406,22 +419,23 @@ Napi::Value readMemory(const Napi::CallbackInfo& args) {
     moduleInfo.Set("y", Napi::Number::New(env, result.y));
     moduleInfo.Set("z", Napi::Number::New(env, result.z));
 
-    if (args.Length() == 4) cbResult = moduleInfo;
-    else return moduleInfo;
+    if (args.Length() == 4)
+      cbResult = moduleInfo;
+    else
+      return moduleInfo;
 
   } else {
-
-    if (args.Length() == 4) cbError = Napi::String::New(env, "unexpected data type");
+    if (args.Length() == 4)
+      cbError = Napi::String::New(env, "unexpected data type");
     else {
       memoryjs::throwError(env, "unexpected data type");
       return env.Null();
     }
-
   }
 
-  if (args.Length() == 4) callback.Call({ cbError, cbResult });
+  if (args.Length() == 4) callback.Call({cbError, cbResult});
 
-  return env.Null(); // ???
+  return env.Null();  // ???
 }
 
 Napi::Value readBuffer(const Napi::CallbackInfo& args) {
@@ -444,7 +458,7 @@ Napi::Value readBuffer(const Napi::CallbackInfo& args) {
 
   // Set callback variables in the case the a callback parameter has been passed
   Napi::Function callback = args[3].As<Napi::Function>();
-  Napi::Value cbError = env.Null(); // Define the error message that will be set if no data type is recognised
+  Napi::Value cbError = env.Null();  // Define the error message that will be set if no data type is recognised
   Napi::Value cbResult;
 
   HANDLE handle = (HANDLE)args[0].As<Napi::Number>().Int32Value();
@@ -452,11 +466,11 @@ Napi::Value readBuffer(const Napi::CallbackInfo& args) {
   SIZE_T size = args[2].As<Napi::Number>().Uint32Value();
   char* data = memory::readBuffer(handle, address, size);
 
-  Napi::Buffer<char> buffer = Napi::Buffer<char>::Copy(env, data, size); // TODO copy or new?
+  Napi::Buffer<char> buffer = Napi::Buffer<char>::Copy(env, data, size);  // TODO copy or new?
 
   if (args.Length() == 4) {
     cbResult = buffer;
-    callback.Call({ cbError, cbResult });
+    callback.Call({cbError, cbResult});
     return env.Null();
   }
 
@@ -471,9 +485,10 @@ Napi::Value findPattern(const Napi::CallbackInfo& args) {
   //   return;
   // }
 
-  // if (!args[0]->IsNumber() && !args[1]->IsString() && !args[2]->IsNumber() && !args[3]->IsNumber() && !args[4]->IsNumber()) {
-  //   memoryjs::throwError("first argument must be a number, the remaining arguments must be numbers apart from the callback", isolate);
-  //   return;
+  // if (!args[0]->IsNumber() && !args[1]->IsString() && !args[2]->IsNumber() && !args[3]->IsNumber() &&
+  // !args[4]->IsNumber()) {
+  //   memoryjs::throwError("first argument must be a number, the remaining arguments must be numbers apart from the
+  //   callback", isolate); return;
   // }
 
   // if (args.Length() == 6 && !args[5]->IsFunction()) {
@@ -508,12 +523,14 @@ Napi::Value findPattern(const Napi::CallbackInfo& args) {
       uint32_t patternOffset = args[4].As<Napi::Number>().Uint32Value();
       uint32_t addressOffset = args[5].As<Napi::Number>().Uint32Value();
 
-      address = pattern::findPattern(handle, moduleEntries[i], signature.c_str(), sigType, patternOffset, addressOffset);
+      address =
+          pattern::findPattern(handle, moduleEntries[i], signature.c_str(), sigType, patternOffset, addressOffset);
       break;
     }
   }
 
-  // If no error was set by getModules and the address is still the value we set it as, it probably means we couldn't find the module
+  // If no error was set by getModules and the address is still the value we set it as, it probably means we couldn't
+  // find the module
   if (strcmp(errorMessage, "") && address == -1) errorMessage = "unable to find module";
 
   // If no error was set by getModules and the address is -2 this means there was no match to the pattern
@@ -523,7 +540,7 @@ Napi::Value findPattern(const Napi::CallbackInfo& args) {
   if (args.Length() == 7) {
     // Callback to let the user handle with the information
     Napi::Function callback = args[6].As<Napi::Function>();
-    callback.Call({ Napi::String::New(env, errorMessage), Napi::Number::New(env, address) });
+    callback.Call({Napi::String::New(env, errorMessage), Napi::Number::New(env, address)});
     return env.Null();
   }
 

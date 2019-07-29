@@ -62,5 +62,5 @@ MODULEENTRY32 module::findModule(const char* moduleName, DWORD processId, char**
 DWORD64 module::getBaseAddress(const char* processName, DWORD processId) {
   char* errorMessage = "";
   MODULEENTRY32 baseModule = module::findModule(processName, processId, &errorMessage);
-  return (DWORD64)baseModule.modBaseAddr; 
+  return (DWORD64)baseModule.modBaseAddr;
 }

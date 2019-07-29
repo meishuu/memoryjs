@@ -4,12 +4,13 @@
 #include <TlHelp32.h>
 #include <vector>
 
-#define INRANGE(x,a,b) (x >= a && x <= b) 
-#define getBits( x ) (INRANGE(x,'0','9') ? (x - '0') : ((x&(~0x20)) - 'A' + 0xa))
-#define getByte( x ) (getBits(x[0]) << 4 | getBits(x[1]))
+#define INRANGE(x, a, b) (x >= a && x <= b)
+#define getBits(x) (INRANGE(x, '0', '9') ? (x - '0') : ((x & (~0x20)) - 'A' + 0xa))
+#define getByte(x) (getBits(x[0]) << 4 | getBits(x[1]))
 
 /* based off Y3t1y3t's implementation */
-uintptr_t pattern::findPattern(HANDLE handle, MODULEENTRY32 module, const char* pattern, short sigType, uintptr_t patternOffset, uintptr_t addressOffset) { 
+uintptr_t pattern::findPattern(HANDLE handle, MODULEENTRY32 module, const char* pattern, short sigType,
+                               uintptr_t patternOffset, uintptr_t addressOffset) {
   auto moduleSize = uintptr_t(module.modBaseSize);
   auto moduleBase = uintptr_t(module.hModule);
 
@@ -34,20 +35,18 @@ uintptr_t pattern::findPattern(HANDLE handle, MODULEENTRY32 module, const char* 
   }
 
   // the method that calls this will check to see if the value is -2
-	// and throw a 'no match' error
+  // and throw a 'no match' error
   return -2;
 };
 
 bool pattern::compareBytes(const unsigned char* bytes, const char* pattern) {
   for (; *pattern; *pattern != ' ' ? ++bytes : bytes, ++pattern) {
-    if (*pattern == ' ' || *pattern == '?')
-      continue;
-		
-    if (*bytes != getByte(pattern))
-      return false;
-    
+    if (*pattern == ' ' || *pattern == '?') continue;
+
+    if (*bytes != getByte(pattern)) return false;
+
     ++pattern;
   }
-  
+
   return true;
 }

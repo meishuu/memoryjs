@@ -1,0 +1,16 @@
+---
+BasedOnStyle: Google
+AllowShortFunctionsOnASingleLine: InlineOnly
+ColumnLimit: 120
+DerivePointerAlignment: false
+IncludeCategories:
+  - Regex: '^<(W|w)indows.h>'
+    Priority: 1
+  - Regex: '^<.*\\.h>'
+    Priority: 2
+  - Regex: '^<'
+    Priority: 3
+  - Regex: '.*'
+    Priority: 4
+
+...

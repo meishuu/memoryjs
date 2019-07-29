@@ -1,7 +1,7 @@
 #include "memory.h"
 
-#include <vector>
 #include <windows.h>
+#include <vector>
 
 std::vector<MEMORY_BASIC_INFORMATION> memory::getRegions(HANDLE hProcess) {
   std::vector<MEMORY_BASIC_INFORMATION> regions;
@@ -9,7 +9,8 @@ std::vector<MEMORY_BASIC_INFORMATION> memory::getRegions(HANDLE hProcess) {
   MEMORY_BASIC_INFORMATION region;
   DWORD64 address;
 
-  for (address = 0; VirtualQueryEx(hProcess, (LPVOID)address, &region, sizeof(region)) == sizeof(region); address += region.RegionSize) {
+  for (address = 0; VirtualQueryEx(hProcess, (LPVOID)address, &region, sizeof(region)) == sizeof(region);
+       address += region.RegionSize) {
     regions.push_back(region);
   }
 

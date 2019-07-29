@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace module {
-  std::vector<MODULEENTRY32> getModules(DWORD processId, char** errorMessage);
-  MODULEENTRY32 findModule(const char* moduleName, DWORD processId, char** errorMessage);
-  DWORD64 getBaseAddress(const char* processName, DWORD processId);
-}
+std::vector<MODULEENTRY32> getModules(DWORD processId, char** errorMessage);
+MODULEENTRY32 findModule(const char* moduleName, DWORD processId, char** errorMessage);
+DWORD64 getBaseAddress(const char* processName, DWORD processId);
+}  // namespace module

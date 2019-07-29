@@ -4,7 +4,7 @@
 #include <TlHelp32.h>
 #include <vector>
 
-process::Pair process::openProcess(const char* processName, char** errorMessage){
+process::Pair process::openProcess(const char* processName, char** errorMessage) {
   PROCESSENTRY32 process;
   HANDLE handle = NULL;
 
@@ -25,8 +25,8 @@ process::Pair process::openProcess(const char* processName, char** errorMessage)
   }
 
   return {
-    handle,
-    process,
+      handle,
+      process,
   };
 }
 
@@ -51,12 +51,12 @@ process::Pair process::openProcess(DWORD processId, char** errorMessage) {
   }
 
   return {
-    handle,
-    process,
+      handle,
+      process,
   };
 }
 
-void process::closeProcess(HANDLE hProcess){
+void process::closeProcess(HANDLE hProcess) {
   CloseHandle(hProcess);
 }
 
